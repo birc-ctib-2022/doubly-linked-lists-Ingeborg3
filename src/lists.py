@@ -91,11 +91,6 @@ class DLList(Generic[T]):
         return f"[{', '.join(elms)}]"
     __repr__ = __str__  # because why not?
 
-
-# Exercises
-
-# hvorfor lavet som funktioner og ikke metoder? Et objekt modificeres.
-# Der laves ikke komplekse beregninger på det.
  
 def keep(x: DLList[T], p: Callable[[T], bool]) -> None:
     """
