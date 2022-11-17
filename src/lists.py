@@ -132,7 +132,8 @@ def reverse(x: DLList[T]) -> None:
     print(lst)
     x = lst
     return
-
+# virker ikke, da lst assignes til en local variabel i funktionens
+# scope i stedet for til den globale variabel x.
 x=DLList([1, 2, 3, 4, 5])
 reverse(x)
 
