@@ -83,9 +83,8 @@ class DLList(Generic[T]):
         """Get string with the elements going in the next direction."""
         elms: list[str] = []
         link = self.head.next
-        while link and link is not self.head: # hvorfor nødvendigt med 
-            # while link and link is not self.head og ikke blot while 
-            # link is not self.head?
+        while link and link is not self.head: # kan blot skrives som
+            # while link is not self.head.
             elms.append(str(link.val))
             link = link.next
         return f"[{', '.join(elms)}]"
@@ -110,36 +109,37 @@ def keep(x: DLList[T], p: Callable[[T], bool]) -> None:
     return
 
 
-def reverse(x: DLList[T]) -> None:
-    """
-    Reverse the list x.
-
-    >>> x = DLList([1, 2, 3, 4, 5])
-    >>> reverse(x) # the function reverse() should return nothing.
-    >>> print(x)
-    [5, 4, 3, 2, 1]
-    """
-    lst = DLList() # circular linked list with dummy element. 
-    link = x.head.next
-    while link is not x.head:
-        insert_after(lst.head, link.val)
-        link = link.next 
-    print(lst)
-    x = lst
-    return
-# virker ikke, da lst assignes til en local variabel i funktionens
-# scope i stedet for til den globale variabel x.
-x=DLList([1, 2, 3, 4, 5])
-reverse(x)
-
-
-# def reverse2(x: DLList[T]) -> None: # Hvorfor virker denne her ikke?
+#def reverse(x: DLList[T]) -> None:
+#    """
+#    Reverse the list x.
+#
+#    >>> x = DLList([1, 2, 3, 4, 5])
+#    >>> reverse(x) # the function reverse() should return nothing, 
+#    >>> print(x) but modify a global variable. 
+#    [5, 4, 3, 2, 1]
+#    """
+#    lst = DLList() # circular linked list with dummy element. 
 #    link = x.head.next
 #    while link is not x.head:
-#        link.next, link.prev = link.prev, link.next
-#        link = link.prev
-#    return x
+#        insert_after(lst.head, link.val)
+#        link = link.next 
+#    x = lst
+#    return
+# virker ikke, da lst assignes til en local variabel i funktionens
+# scope i stedet for til den globale variabel x.
 
+
+def reverse(x: DLList[T]) -> None:
+    link = x.head.next
+    while link is not x.head:
+        link.next, link.prev = link.prev, link.next
+        link = link.prev
+    link.next, link.prev = link.prev, link.next # Hvis denne linje
+    # ikke er inkluderet i funktionen, vil textual representation af
+    # x blive lig 1, da link.head.next vil pointe tilbage til x.head,
+    # hvorfor while loopet, der benyttes til at tilføje link values til
+    # x, terminerer. Dvs. der vil kun tilføjes en value (1) til x. 
+    return 
 
 def sort(x: DLList[S]) -> None:
     """
