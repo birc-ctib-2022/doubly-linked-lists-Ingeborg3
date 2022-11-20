@@ -31,10 +31,10 @@ class Link(Generic[T]):
         self.val = val
         self.prev = p
         self.next = n
-
+    
 
 def insert_after(link: Link[T], val: T) -> None:
-    """Add a new link containing avl after link."""
+    """Add a new link containing val after link."""
     new_link = Link(val, link, link.next)
     new_link.prev.next = new_link
     new_link.next.prev = new_link
@@ -83,15 +83,14 @@ class DLList(Generic[T]):
         """Get string with the elements going in the next direction."""
         elms: list[str] = []
         link = self.head.next
-        while link and link is not self.head:
+        while link and link is not self.head: # kan blot skrives som
+            # while link is not self.head.
             elms.append(str(link.val))
             link = link.next
         return f"[{', '.join(elms)}]"
     __repr__ = __str__  # because why not?
 
-
-# Exercises
-
+ 
 def keep(x: DLList[T], p: Callable[[T], bool]) -> None:
     """
     Remove all elements from x that do not satisfy the predicate p.
@@ -101,20 +100,46 @@ def keep(x: DLList[T], p: Callable[[T], bool]) -> None:
     >>> print(x)
     [2, 4]
     """
-    ...
+    # modify x, not make new DLList.
+    link = x.head.next
+    while link is not x.head:
+        if not p(link.val):
+            remove_link(link)
+        link = link.next
+    return
+
+
+#def reverse(x: DLList[T]) -> None:
+#    """
+#    Reverse the list x.
+#
+#    >>> x = DLList([1, 2, 3, 4, 5])
+#    >>> reverse(x) # the function reverse() should return nothing, 
+#    >>> print(x) but modify a global variable. 
+#    [5, 4, 3, 2, 1]
+#    """
+#    lst = DLList() # circular linked list with dummy element. 
+#    link = x.head.next
+#    while link is not x.head:
+#        insert_after(lst.head, link.val)
+#        link = link.next 
+#    x = lst
+#    return
+# virker ikke, da lst assignes til en local variabel i funktionens
+# scope i stedet for til den globale variabel x.
 
 
 def reverse(x: DLList[T]) -> None:
-    """
-    Reverse the list x.
-
-    >>> x = DLList([1, 2, 3, 4, 5])
-    >>> reverse(x)
-    >>> print(x)
-    [5, 4, 3, 2, 1]
-    """
-    ...
-
+    link = x.head.next
+    while link is not x.head:
+        link.next, link.prev = link.prev, link.next
+        link = link.prev
+    link.next, link.prev = link.prev, link.next # Hvis denne linje
+    # ikke er inkluderet i funktionen, vil textual representation af
+    # x blive lig 1, da link.head.next vil pointe tilbage til x.head,
+    # hvorfor while loopet, der benyttes til at tilføje link values til
+    # x, terminerer. Dvs. der vil kun tilføjes en value (1) til x. 
+    return 
 
 def sort(x: DLList[S]) -> None:
     """
@@ -125,4 +150,13 @@ def sort(x: DLList[S]) -> None:
     >>> print(x)
     [1, 3, 4, 5, 6, 12]
     """
-    ...
+    # insertion sort.
+    link_a = x.head.next.next
+    while link_a is not x.head:
+        link_b = link_a
+        while link_b.prev.val > link_b.val:
+            insert_after(link_b, link_b.prev.val)
+            remove_link(link_b.prev)
+        link_a = link_a.next
+    return
+
